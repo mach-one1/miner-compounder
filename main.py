@@ -3,14 +3,37 @@ from compounder import Compounder
 from helpers import utils
 import argparse
 import configparser
+import json
 import logging
 import os
 
 
-def handle_miner(compounder):
+def handle_miner(compounder, strategy, new_batch):
     miner_rewards = compounder.get_miner_rewards()
-    print(miner_rewards)
+    amount_to_action = compounder.get_amount_to_action()
+    reward_remainder = compounder.get_remainder(miner_rewards, amount_to_action)
+    ratio = compounder.get_ratio(reward_remainder, amount_to_action)
+    message = json.dumps(
+        {
+            'miner':
+                {
+                    'miner_rewards': miner_rewards,
+                    'amount_to_action': amount_to_action,
+                    'reward_remainder': reward_remainder,
+                    'ratio': ratio
 
+                }
+        },
+        indent=4
+    )
+    logging.debug(message)
+    print(message)
+    # if miner_rewards >= amount_to_action:
+    #     ready_batch = compounder.get_batch(
+    #         miner_rewards, amount_to_action
+    #     )
+    #     if compounder.check_new_batch(ready_batch, new_batch) and \
+    #             compounder.check_ratio(ratio):
 
 def main(args, config):
 
@@ -20,7 +43,7 @@ def main(args, config):
         config["default"]["contract_address"],
         "./miners/{}/abi.json".format(args.compounder),
         config.getint('default', 'max_tries'),
-        config.getfloat('default', 'crypto_to_action'),
+        config.getint('default', 'amount_to_action'),
         config.getint('default', 'txn_timeout'),
         config.getint('default', 'gas_price'),
         config.getint('default', 'gas'),
@@ -29,9 +52,10 @@ def main(args, config):
     )
 
     strategy = utils.strategy(config["default"]["strategy"])
+    new_batch = 0
     while True:
-        handle_miner(compounder)
-    
+        handle_miner(compounder, strategy, new_batch)
+
 
 if __name__ == "__main__":
 

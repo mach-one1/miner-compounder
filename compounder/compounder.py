@@ -3,6 +3,7 @@ from helpers import utils
 import logging
 import traceback
 
+
 class Compounder:
     def __init__(
         self,
@@ -11,7 +12,7 @@ class Compounder:
         contract_address,
         abi_file,
         max_tries,
-        usd_to_compound,
+        amount_to_action,
         txn_timeout,
         gas_price,
         gas,
@@ -23,7 +24,7 @@ class Compounder:
         self.contract_address = contract_address
         self.abi_file = abi_file
         self.max_tries = max_tries
-        self.usd_to_compound = usd_to_compound
+        self.amount_to_action = amount_to_action
         self.txn_timeout = txn_timeout
         self.gas_price = gas_price
         self.gas = gas
@@ -50,3 +51,15 @@ class Compounder:
                 )
                 continue
         return response
+
+    def get_amount_to_action(self):
+        return self.amount_to_action
+
+    def get_remainder(self, miner_rewards, amount_to_action):
+        return miner_rewards % amount_to_action
+
+    def get_ratio(self, reward_remainder, amount_to_action):
+        return (1 - reward_remainder / amount_to_action)
+
+    def get_batch(self, miner_rewards, amount_to_action):
+        return round(miner_rewards / amount_to_action)
