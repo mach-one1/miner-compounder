@@ -22,3 +22,12 @@ def eth2wei(eth, unit="ether"):
 
 def decimal_fix_places(decimal_number, decimals):
     return decimal_number / (10 ** decimals)
+
+
+def strategy(ratio):
+    strategy = ratio.split(":")
+
+    if len(strategy) != 2:
+        logging.fatal('Unable to set strategy')
+
+    return ["compound"] * int(strategy[0]) + ["claim"] * int(strategy[1])

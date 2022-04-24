@@ -1,9 +1,15 @@
 from compounder import Compounder
+#from itertools import cycle
 from helpers import utils
 import argparse
 import configparser
 import logging
 import os
+
+
+def handle_miner(compounder):
+    miner_rewards = compounder.get_miner_rewards()
+    print(miner_rewards)
 
 
 def main(args, config):
@@ -14,8 +20,18 @@ def main(args, config):
         config["default"]["contract_address"],
         "./miners/{}/abi.json".format(args.compounder),
         config.getint('default', 'max_tries'),
-        config.getfloat('default', 'crypto_to_compound'),
+        config.getfloat('default', 'crypto_to_action'),
+        config.getint('default', 'txn_timeout'),
+        config.getint('default', 'gas_price'),
+        config.getint('default', 'gas'),
+        config["default"]["rpc_host"],
+        config["default"]["rewards_function"]
     )
+
+    strategy = utils.strategy(config["default"]["strategy"])
+    while True:
+        handle_miner(compounder)
+    
 
 if __name__ == "__main__":
 
