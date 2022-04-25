@@ -129,5 +129,4 @@ dmypy.json
 .pyre/
 
 # App specific
-autocompounder.log
-config_user.ini
+*.log
