@@ -91,7 +91,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "-c", "--compounder",
-        help="Autocompound drip garden. Can use env var COMPOUND_GARDEN",
+        help="Autocompound miner. Can use env var COMPOUNDER",
         type=str, dest='compounder',
         default=os.environ.get('COMPOUNDER')
     )
